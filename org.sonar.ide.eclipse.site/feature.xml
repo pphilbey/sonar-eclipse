@@ -2,7 +2,7 @@
 <feature
       id="org.sonar.ide.eclipse.site"
       label="Sonar Integration for Eclipse Update Site"
-      version="2.2.0.qualifier"
+      version="2.2.0.20110721-1444"
       provider-name="SonarSource">
 
    <includes
