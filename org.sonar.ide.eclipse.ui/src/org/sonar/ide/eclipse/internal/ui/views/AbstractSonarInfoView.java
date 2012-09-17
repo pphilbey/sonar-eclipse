@@ -187,7 +187,7 @@ public abstract class AbstractSonarInfoView extends ViewPart implements ISelecti
   }
 
   public void selectionChanged(IWorkbenchPart part, ISelection selection) {
-    if (part.equals(this)) {
+    if (this.equals(part)) {
       return;
     }
     if (!linking) {
@@ -248,7 +248,6 @@ public abstract class AbstractSonarInfoView extends ViewPart implements ISelecti
       return null;
     }
     if (element instanceof IAdaptable) {
-      // return (ISonarResource) ((IAdaptable) element).getAdapter(ISonarResource.class);
       return PlatformUtils.adapt(element, ISonarResource.class);
     }
     return null;

@@ -58,7 +58,7 @@ public class ProjectModule extends Module {
     this.project = createProject(projectDefinition);
   }
 
-  private Project createProject(ProjectDefinition projectDefinition) {
+  private static Project createProject(ProjectDefinition projectDefinition) {
     Configuration conf = new MapConfiguration(projectDefinition.getProperties());
     Project project = new Project(conf.getString(CoreProperties.PROJECT_KEY_PROPERTY));
     project.setLanguageKey(Java.KEY);

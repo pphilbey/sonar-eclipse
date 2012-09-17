@@ -53,7 +53,7 @@ public final class WorkspaceHelpers {
       }
     }, new NullProgressMonitor());
 
-    JobHelpers.waitForJobsToComplete(); // was: JobHelpers.waitForJobsToComplete(new NullProgressMonitor());
+    JobHelpers.waitForJobsToComplete();
 
     File[] files = workspace.getRoot().getLocation().toFile().listFiles();
     if (files != null) {

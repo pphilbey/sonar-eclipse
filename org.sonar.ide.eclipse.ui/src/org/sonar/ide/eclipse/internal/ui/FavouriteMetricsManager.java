@@ -67,7 +67,7 @@ public final class FavouriteMetricsManager {
   private void notifyListeners() {
     for (final Listener listener : listeners) {
       SafeRunner.run(new AbstractSafeRunnable() {
-        public void run() throws Exception {
+        public void run() {
           listener.updated();
         }
       });

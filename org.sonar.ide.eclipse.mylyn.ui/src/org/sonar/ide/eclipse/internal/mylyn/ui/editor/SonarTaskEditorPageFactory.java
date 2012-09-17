@@ -51,8 +51,7 @@ public class SonarTaskEditorPageFactory extends AbstractTaskEditorPageFactory {
 
   @Override
   public Image getPageImage() {
-    // Use reflection to return CommonImages.getImage(TasksUiImages.REPOSITORY_SMALL);
-    // Because the package changed in mylyn 3.7 and was removed in mylyn 3.8
+    // Use reflection,because the package changed in mylyn 3.7 and was removed in mylyn 3.8
     Class<?> clazzCommonImages;
     try {
       clazzCommonImages = Class.forName("org.eclipse.mylyn.internal.provisional.commons.ui.CommonImages");

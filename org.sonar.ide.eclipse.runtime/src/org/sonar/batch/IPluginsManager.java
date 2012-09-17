@@ -22,17 +22,16 @@ package org.sonar.batch;
 import org.sonar.api.Plugin;
 
 import java.io.File;
+import java.io.IOException;
 
 public interface IPluginsManager {
+  void install(File plugin) throws IOException;
 
-  void install(File plugin) throws Exception;
+  void start() throws IOException;
 
-  void start() throws Exception;
+  void stop();
 
-  void stop() throws Exception;
-
-  ClassLoader getClassLoader(String pluginKey) throws Exception;
+  ClassLoader getClassLoader(String pluginKey);
 
   Plugin[] getPlugins();
-
 }

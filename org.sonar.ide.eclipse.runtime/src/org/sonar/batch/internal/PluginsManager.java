@@ -30,7 +30,9 @@ import org.sonar.batch.IPluginsManager;
 import org.sonar.core.classloaders.ClassLoadersCollection;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -55,13 +57,13 @@ public class PluginsManager implements IPluginsManager {
     this.workDir = workDir;
   }
 
-  public void install(File plugin) throws Exception {
+  public void install(File plugin) throws IOException {
     unzip(plugin, plugin.getName());
   }
 
   private ClassLoadersCollection collection;
 
-  public void start() throws Exception {
+  public void start() throws IOException {
     LOG.info("Starting Sonar Plugins Manager (workDir: {})", workDir);
 
     collection = new ClassLoadersCollection(parentClassLoader);
@@ -95,11 +97,11 @@ public class PluginsManager implements IPluginsManager {
     collection.done();
   }
 
-  public void stop() throws Exception {
+  public void stop() {
     LOG.info("Stopping Sonar Plugins Manager");
   }
 
-  private void unzip(File file, String name) throws Exception {
+  private void unzip(File file, String name) throws IOException {
     File toDir = new File(workDir, name);
     ZipUtils.unzip(file, toDir);
     File manifestFile = new File(toDir, "META-INF/MANIFEST.MF");
@@ -108,7 +110,7 @@ public class PluginsManager implements IPluginsManager {
     IOUtils.closeQuietly(manifestStream);
   }
 
-  public ClassLoader getClassLoader(String pluginKey) throws Exception {
+  public ClassLoader getClassLoader(String pluginKey) {
     return collection.get(pluginKey);
   }
 

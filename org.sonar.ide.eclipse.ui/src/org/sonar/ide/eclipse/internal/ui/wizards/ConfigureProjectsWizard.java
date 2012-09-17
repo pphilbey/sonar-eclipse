@@ -169,7 +169,6 @@ public class ConfigureProjectsWizard extends Wizard {
       }
 
       // TODO we can improve UI of table by adding image to first element :
-      // PlatformUI.getWorkbench().getSharedImages().getImage(IDE.SharedImages.IMG_OBJ_PROJECT);
       ViewerSupport.bind(
           viewer,
           new WritableList(list, SonarProject.class),
@@ -190,8 +189,7 @@ public class ConfigureProjectsWizard extends Wizard {
             if (null == serverUrl) {
               setMessage("Please configure a sonar server first", IMessageProvider.ERROR);
             } else {
-              SonarProject[] projects = getProjects();
-              getWizard().getContainer().run(true, false, new AssociateProjects(serverUrl, projects));
+              getWizard().getContainer().run(true, false, new AssociateProjects(serverUrl, getProjects()));
             }
             setMessage("", IMessageProvider.NONE);
           } catch (InvocationTargetException ex) {
@@ -240,13 +238,13 @@ public class ConfigureProjectsWizard extends Wizard {
 
     public boolean finish() {
       final String serverUrl = getServerUrl();
-      final SonarProject[] projects = getProjects();
+      final SonarProject[] projectsArray = getProjects();
       try {
         getWizard().getContainer().run(true, true, new IRunnableWithProgress() {
           public void run(IProgressMonitor monitor) throws InvocationTargetException, InterruptedException {
             errorMessage = null;
-            monitor.beginTask("Verifying", projects.length);
-            for (SonarProject project : projects) {
+            monitor.beginTask("Verifying", projectsArray.length);
+            for (SonarProject project : projectsArray) {
               monitor.subTask("project '" + project.getName() + "'");
 
               if (StringUtils.isBlank(project.getGroupId())) {
@@ -292,7 +290,7 @@ public class ConfigureProjectsWizard extends Wizard {
         return false;
       }
 
-      for (SonarProject sonarProject : projects) {
+      for (SonarProject sonarProject : projectsArray) {
         try {
           IProject project = sonarProject.getProject();
           ProjectProperties properties = ProjectProperties.getInstance(project);

@@ -19,6 +19,8 @@
  */
 package org.sonar.ide.eclipse;
 
+import org.eclipse.equinox.security.storage.StorageException;
+
 import org.eclipse.equinox.security.storage.EncodingUtils;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
@@ -35,7 +37,6 @@ import static org.junit.Assert.assertThat;
 
 @SuppressWarnings("restriction")
 public class SonarServerManagerTest {
-
   private ServersManager serversManager;
 
   @Before
@@ -45,7 +46,7 @@ public class SonarServerManagerTest {
   }
 
   @Test
-  public void shouldCreateFakeServer() throws Exception {
+  public void shouldCreateFakeServer() {
     String url = "http://new";
     Host host = serversManager.findServer(url);
     assertThat(host, notNullValue());
@@ -53,7 +54,7 @@ public class SonarServerManagerTest {
   }
 
   @Test
-  public void shouldUseSecureStorage() throws Exception {
+  public void shouldUseSecureStorage() throws StorageException {
     String url = "http://secure";
     serversManager.addServer(url, "tester", "secret");
 
@@ -67,5 +68,4 @@ public class SonarServerManagerTest {
   public void tearDown() {
     serversManager.clean();
   }
-
 }

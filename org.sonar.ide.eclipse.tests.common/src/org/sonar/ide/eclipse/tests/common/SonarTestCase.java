@@ -87,7 +87,6 @@ public abstract class SonarTestCase {
       }
 
       // TODO interpolate files
-      // FileUtils.copyDirectory(projectFolder, destDir, HiddenFileFilter.VISIBLE);
       FileUtils.copyDirectory(projectFolder, destDir);
       return destDir;
     } finally {
@@ -96,7 +95,7 @@ public abstract class SonarTestCase {
   }
 
   @BeforeClass
-  public final static void prepareWorkspace() throws Exception {
+  public static final void prepareWorkspace() throws CoreException {
     // Override default location "target/projects-source"
     projectsSource = new File("testdata");
     projectsWorkdir = new File("target/projects-target");
@@ -111,15 +110,13 @@ public abstract class SonarTestCase {
   }
 
   @AfterClass
-  public final static void end() throws Exception {
-    // cleanWorkspace();
-
-    final IWorkspaceDescription description = workspace.getDescription();
+  public static final void end() throws CoreException {
+    IWorkspaceDescription description = workspace.getDescription();
     description.setAutoBuilding(true);
     workspace.setDescription(description);
   }
 
-  private static void cleanWorkspace() throws Exception {
+  private static void cleanWorkspace() throws CoreException {
     // Job.getJobManager().suspend();
     // waitForJobs();
 

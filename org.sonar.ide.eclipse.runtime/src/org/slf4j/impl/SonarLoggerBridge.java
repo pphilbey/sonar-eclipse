@@ -26,7 +26,7 @@ import org.sonar.batch.LogEntry;
 
 public final class SonarLoggerBridge extends MarkerIgnoringBase {
 
-  static SonarLoggerBridge SINGLETON = new SonarLoggerBridge();
+  static final SonarLoggerBridge SINGLETON = new SonarLoggerBridge();
 
   private SonarLoggerBridge() {
     super.name = "Sonar";
