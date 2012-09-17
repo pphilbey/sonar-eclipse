@@ -103,17 +103,17 @@ public abstract class AbstractSonarInfoView extends ViewPart implements ISelecti
    *          the parent control
    * @see IWorkbenchPart#createPartControl(org.eclipse.swt.widgets.Composite)
    */
-  abstract protected void internalCreatePartControl(Composite parent);
+  protected abstract void internalCreatePartControl(Composite parent);
 
   /**
    * @return the view's primary control.
    */
-  abstract protected Control getControl();
+  protected abstract Control getControl();
 
   /**
    * Set the input of this view.
    */
-  abstract protected void doSetInput(Object input);
+  protected abstract void doSetInput(Object input);
 
   @Override
   public final void createPartControl(Composite parent) {

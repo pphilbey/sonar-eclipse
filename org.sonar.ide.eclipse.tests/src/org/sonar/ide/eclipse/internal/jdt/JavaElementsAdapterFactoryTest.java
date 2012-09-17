@@ -39,8 +39,8 @@ import static org.junit.Assert.assertThat;
 @SuppressWarnings("restriction")
 public class JavaElementsAdapterFactoryTest extends SonarTestCase {
 
-  private static final String groupId = "org.sonar-ide.tests.SimpleProject";
-  private static final String artifactId = "SimpleProject";
+  private static final String GROUP_ID = "org.sonar-ide.tests.SimpleProject";
+  private static final String ARTIFACT_ID = "SimpleProject";
   private static IProject project;
 
   @BeforeClass
@@ -49,8 +49,8 @@ public class JavaElementsAdapterFactoryTest extends SonarTestCase {
     // Configure the project
     ProjectProperties properties = ProjectProperties.getInstance(project);
     properties.setUrl("http://localhost:9000");
-    properties.setGroupId(groupId);
-    properties.setArtifactId(artifactId);
+    properties.setGroupId(GROUP_ID);
+    properties.setArtifactId(ARTIFACT_ID);
     properties.save();
     ToggleNatureAction.enableNature(project);
   }
@@ -71,7 +71,7 @@ public class JavaElementsAdapterFactoryTest extends SonarTestCase {
   public void shouldAdaptProjectToSonarProject() {
     ISonarProject sonarElement = (ISonarProject) factory.getAdapter(project, ISonarProject.class);
     assertThat(sonarElement, notNullValue());
-    assertThat(sonarElement.getKey(), is(groupId + ":" + artifactId));
+    assertThat(sonarElement.getKey(), is(GROUP_ID + ":" + ARTIFACT_ID));
   }
 
   @Test
@@ -79,7 +79,7 @@ public class JavaElementsAdapterFactoryTest extends SonarTestCase {
     IFolder folder = project.getFolder("src/main/java");
     ISonarResource sonarElement = (ISonarResource) factory.getAdapter(folder, ISonarResource.class);
     assertThat(sonarElement, notNullValue());
-    assertThat(sonarElement.getKey(), is(groupId + ":" + artifactId + ":[default]"));
+    assertThat(sonarElement.getKey(), is(GROUP_ID + ":" + ARTIFACT_ID + ":[default]"));
   }
 
   @Test
@@ -87,6 +87,6 @@ public class JavaElementsAdapterFactoryTest extends SonarTestCase {
     IFile file = project.getFile("src/main/java/ViolationOnFile.java");
     ISonarFile sonarElement = (ISonarFile) factory.getAdapter(file, ISonarFile.class);
     assertThat(sonarElement, notNullValue());
-    assertThat(sonarElement.getKey(), is(groupId + ":" + artifactId + ":[default].ViolationOnFile"));
+    assertThat(sonarElement.getKey(), is(GROUP_ID + ":" + ARTIFACT_ID + ":[default].ViolationOnFile"));
   }
 }

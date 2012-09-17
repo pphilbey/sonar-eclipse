@@ -52,16 +52,14 @@ import static org.junit.Assert.assertTrue;
  * Common test case for sonar-ide/eclipse projects.
  */
 public abstract class SonarTestCase {
-
   private static final Logger LOG = LoggerFactory.getLogger(SonarTestCase.class);
 
-  protected static final IProgressMonitor monitor = new NullProgressMonitor();
+  private static final ReadWriteLock COPY_PROJECT_LOCK = new ReentrantReadWriteLock();
+  protected static final IProgressMonitor MONITOR = new NullProgressMonitor();
   protected static IWorkspace workspace;
   protected static SonarUiPlugin plugin;
-
   protected static File projectsSource;
   protected static File projectsWorkdir;
-  private static final ReadWriteLock copyProjectLock = new ReentrantReadWriteLock();
 
   protected static File getProject(String projectName) throws IOException {
     File destDir = new File(projectsWorkdir, projectName); // TODO include testName
@@ -80,7 +78,7 @@ public abstract class SonarTestCase {
    *           if unable to prepare project directory
    */
   protected static File getProject(String projectName, File destDir) throws IOException {
-    copyProjectLock.writeLock().lock();
+    COPY_PROJECT_LOCK.writeLock().lock();
     try {
       File projectFolder = new File(projectsSource, projectName);
       assertTrue("Project " + projectName + " folder not found.\n" + projectFolder.getAbsolutePath(), projectFolder.isDirectory());
@@ -93,12 +91,12 @@ public abstract class SonarTestCase {
       FileUtils.copyDirectory(projectFolder, destDir);
       return destDir;
     } finally {
-      copyProjectLock.writeLock().unlock();
+      COPY_PROJECT_LOCK.writeLock().unlock();
     }
   }
 
   @BeforeClass
-  final static public void prepareWorkspace() throws Exception {
+  public final static void prepareWorkspace() throws Exception {
     // Override default location "target/projects-source"
     projectsSource = new File("testdata");
     projectsWorkdir = new File("target/projects-target");
@@ -113,7 +111,7 @@ public abstract class SonarTestCase {
   }
 
   @AfterClass
-  final static public void end() throws Exception {
+  public final static void end() throws Exception {
     // cleanWorkspace();
 
     final IWorkspaceDescription description = workspace.getDescription();
@@ -132,7 +130,7 @@ public abstract class SonarTestCase {
     }
     final IWorkspaceRoot root = workspace.getRoot();
     for (final IProject project : root.getProjects()) {
-      project.delete(true, true, monitor);
+      project.delete(true, true, MONITOR);
     }
   }
 
@@ -166,7 +164,7 @@ public abstract class SonarTestCase {
         }
         addedProjectList.add(project);
       }
-    }, workspace.getRoot(), IWorkspace.AVOID_UPDATE, monitor);
+    }, workspace.getRoot(), IWorkspace.AVOID_UPDATE, MONITOR);
     JobHelpers.waitForJobsToComplete();
     LOG.info("Eclipse project imported");
     return addedProjectList.get(0);

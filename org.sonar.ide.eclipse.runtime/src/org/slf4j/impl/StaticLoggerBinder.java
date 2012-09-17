@@ -22,7 +22,7 @@ package org.slf4j.impl;
 import org.slf4j.ILoggerFactory;
 import org.slf4j.spi.LoggerFactoryBinder;
 
-public class StaticLoggerBinder implements LoggerFactoryBinder {
+public final class StaticLoggerBinder implements LoggerFactoryBinder {
 
   /**
    * The unique instance of this class.
@@ -45,7 +45,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   // to avoid constant folding by the compiler, this field must *not* be final
   public static String REQUESTED_API_VERSION = "1.5.6"; // NOSONAR !final
 
-  private static final String loggerFactoryClassStr = SonarLoggerFactory.class.getName();
+  private static final String LOGGER_FACTORY_CLASS_NAME = SonarLoggerFactory.class.getName();
 
   /**
    * The ILoggerFactory instance returned by the {@link #getLoggerFactory}
@@ -62,7 +62,7 @@ public class StaticLoggerBinder implements LoggerFactoryBinder {
   }
 
   public String getLoggerFactoryClassStr() {
-    return loggerFactoryClassStr;
+    return LOGGER_FACTORY_CLASS_NAME;
   }
 
 }

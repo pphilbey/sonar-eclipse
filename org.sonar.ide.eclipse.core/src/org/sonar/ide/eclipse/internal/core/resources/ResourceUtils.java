@@ -33,15 +33,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class ResourceUtils {
-
   private static final Logger LOG = LoggerFactory.getLogger(ResourceUtils.class);
+
+  private static List<ResourceResolver> resolvers;
 
   private ResourceUtils() {
   }
 
-  private static List<ResourceResolver> resolvers;
-
-  public synchronized static String getSonarKey(IResource resource, IProgressMonitor monitor) {
+  public static synchronized String getSonarKey(IResource resource, IProgressMonitor monitor) {
     if (resolvers == null) {
       resolvers = new ArrayList<ResourceResolver>();
       IExtensionRegistry registry = Platform.getExtensionRegistry();
@@ -64,5 +63,4 @@ public final class ResourceUtils {
     }
     return null;
   }
-
 }

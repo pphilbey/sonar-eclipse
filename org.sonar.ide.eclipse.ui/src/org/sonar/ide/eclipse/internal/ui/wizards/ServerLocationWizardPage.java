@@ -54,7 +54,6 @@ public class ServerLocationWizardPage extends WizardPage {
   private Text serverUrlText;
   private Text serverUsernameText;
   private Text serverPasswordText;
-  private Button testConnectionButton;
   private IStatus status;
 
   public ServerLocationWizardPage() {
@@ -99,13 +98,11 @@ public class ServerLocationWizardPage extends WizardPage {
     serverPasswordText.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
     // Sonar test connection button
-    testConnectionButton = new Button(container, SWT.PUSH);
+    Button testConnectionButton = new Button(container, SWT.PUSH);
     testConnectionButton.setText(Messages.ServerLocationWizardPage_action_test);
     testConnectionButton.setToolTipText(Messages.ServerLocationWizardPage_action_test_tooltip);
     testConnectionButton.setLayoutData(new GridData(GridData.HORIZONTAL_ALIGN_FILL));
-
     testConnectionButton.addSelectionListener(new SelectionAdapter() {
-
       @Override
       public void widgetSelected(SelectionEvent e) {
         // We need those variables - in other case we would get an IllegalAccessException
@@ -127,6 +124,7 @@ public class ServerLocationWizardPage extends WizardPage {
                     status = new Status(IStatus.ERROR, ISonarConstants.PLUGIN_ID, Messages.ServerLocationWizardPage_msg_authentication_error);
                     break;
                   case CONNECT_ERROR:
+                  default:
                     status = new Status(IStatus.ERROR, ISonarConstants.PLUGIN_ID, Messages.ServerLocationWizardPage_msg_connection_error);
                     break;
                 }

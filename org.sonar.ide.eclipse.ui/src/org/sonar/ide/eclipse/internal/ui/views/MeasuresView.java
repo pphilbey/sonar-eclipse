@@ -360,7 +360,7 @@ public class MeasuresView extends AbstractSonarInfoView {
     List<Metric> metrics = index.getSonar().findAll(MetricQuery.all());
     return Maps.uniqueIndex(metrics, new Function<Metric, String>() {
       public String apply(Metric metric) {
-        return metric.getKey();
+        return (null == metric) ? null : metric.getKey();
       }
     });
   }

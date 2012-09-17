@@ -24,7 +24,7 @@ import org.slf4j.helpers.MessageFormatter;
 import org.sonar.batch.EmbeddedSonarPlugin;
 import org.sonar.batch.LogEntry;
 
-public class SonarLoggerBridge extends MarkerIgnoringBase {
+public final class SonarLoggerBridge extends MarkerIgnoringBase {
 
   static SonarLoggerBridge SINGLETON = new SonarLoggerBridge();
 

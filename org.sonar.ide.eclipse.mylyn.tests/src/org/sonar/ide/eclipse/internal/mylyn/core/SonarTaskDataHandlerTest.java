@@ -36,13 +36,12 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 public class SonarTaskDataHandlerTest {
-  private SonarConnector connector;
   private SonarTaskDataHandler handler;
   private TaskRepository repository;
 
   @Before
   public void setUp() {
-    connector = new SonarConnector();
+    SonarConnector connector = new SonarConnector();
     handler = connector.getTaskDataHandler();
     repository = new TaskRepository(SonarConnector.CONNECTOR_KIND, "http://localhost:9000");
   }

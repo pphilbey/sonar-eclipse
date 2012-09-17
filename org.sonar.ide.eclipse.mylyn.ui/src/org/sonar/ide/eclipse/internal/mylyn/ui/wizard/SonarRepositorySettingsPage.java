@@ -121,6 +121,7 @@ public class SonarRepositorySettingsPage extends AbstractRepositorySettingsPage 
             setStatus(RepositoryStatus.createStatus(repository, IStatus.ERROR, SonarMylynUiPlugin.PLUGIN_ID, Messages.SonarRepositorySettingsPage_Authentication_failed));
             break;
           case CONNECT_ERROR:
+          default:
             setStatus(RepositoryStatus.createStatus(repository, IStatus.ERROR, SonarMylynUiPlugin.PLUGIN_ID, Messages.SonarRepositorySettingsPage_Connection_failed));
             break;
         }
