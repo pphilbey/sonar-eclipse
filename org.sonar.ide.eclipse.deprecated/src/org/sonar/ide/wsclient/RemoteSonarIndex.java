@@ -48,18 +48,16 @@ import java.util.Map;
  */
 class RemoteSonarIndex implements SourceCodeSearchEngine {
 
-  private final Host host;
   private final Sonar sonar;
   private final SourceCodeDiffEngine diffEngine;
 
   public RemoteSonarIndex(Host host, SourceCodeDiffEngine diffEngine) {
-    this(host, WSClientFactory.create(host), diffEngine);
+    this(WSClientFactory.create(host), diffEngine);
   }
 
-  private RemoteSonarIndex(Host host, Sonar sonar, SourceCodeDiffEngine diffEngine) {
+  private RemoteSonarIndex(Sonar sonar, SourceCodeDiffEngine diffEngine) {
     this.sonar = sonar;
     this.diffEngine = diffEngine;
-    this.host = host;
   }
 
   /**
