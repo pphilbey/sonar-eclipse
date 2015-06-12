@@ -46,13 +46,14 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.HandlerUtil;
 import org.sonar.ide.eclipse.core.internal.SonarNature;
 import org.sonar.ide.eclipse.core.internal.jobs.AnalyzeProjectRequest;
-import org.sonar.ide.eclipse.core.internal.jobs.SynchronizeAllIssuesJob;
+import org.sonar.ide.eclipse.core.internal.jobs.SonarQubeAnalysisJob;
 import org.sonar.ide.eclipse.ui.internal.SonarUiPlugin;
 import org.sonar.ide.eclipse.ui.internal.console.SonarConsole;
 import org.sonar.ide.eclipse.ui.internal.views.issues.IssuesView;
 
 public class AnalyzeProjectsCommand extends AbstractHandler {
 
+  @Override
   public Object execute(ExecutionEvent event) throws ExecutionException {
     List<IProject> selectedProjects = Lists.newArrayList();
 
@@ -70,8 +71,6 @@ public class AnalyzeProjectsCommand extends AbstractHandler {
 
   private void runAnalysisJob(List<IProject> selectedProjects) {
     boolean debugEnabled = SonarConsole.isDebugEnabled();
-    String sonarJvmArgs = SonarUiPlugin.getSonarJvmArgs();
-    boolean forceFullPreview = SonarUiPlugin.isForceFullPreview();
     List<AnalyzeProjectRequest> requests = new ArrayList<AnalyzeProjectRequest>();
     SonarUiPlugin.getDefault().getSonarConsole().clearConsole();
     for (IProject project : selectedProjects) {
@@ -80,11 +79,10 @@ public class AnalyzeProjectsCommand extends AbstractHandler {
       }
       requests.add(new AnalyzeProjectRequest(project)
         .setDebugEnabled(debugEnabled)
-        .setExtraProps(SonarUiPlugin.getExtraPropertiesForLocalAnalysis(project))
-        .setJvmArgs(sonarJvmArgs)
-        .setForceFullPreview(forceFullPreview));
+        .useHttpWsCache(false)
+        .setExtraProps(SonarUiPlugin.getExtraPropertiesForLocalAnalysis(project)));
     }
-    SynchronizeAllIssuesJob job = new SynchronizeAllIssuesJob(requests);
+    SonarQubeAnalysisJob job = new SonarQubeAnalysisJob(requests);
     showIssuesViewAfterJobSuccess(job);
   }
 
@@ -130,6 +128,7 @@ public class AnalyzeProjectsCommand extends AbstractHandler {
       public void done(IJobChangeEvent event) {
         if (Status.OK_STATUS == event.getResult()) {
           Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
               IWorkbenchWindow iw = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
               try {

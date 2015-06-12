@@ -35,13 +35,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.matchers.JUnitMatchers;
-import org.sonar.ide.eclipse.common.servers.ISonarServer;
 import org.sonar.ide.eclipse.core.internal.SonarCorePlugin;
 import org.sonar.ide.eclipse.core.internal.SonarProperties;
 import org.sonar.ide.eclipse.core.internal.markers.MarkerUtils;
 import org.sonar.ide.eclipse.core.internal.resources.SonarProperty;
 import org.sonar.ide.eclipse.core.internal.servers.ISonarServersManager;
-import org.sonar.ide.eclipse.core.internal.servers.ServersManager;
+import org.sonar.ide.eclipse.core.internal.servers.SonarServer;
 import org.sonar.ide.eclipse.tests.common.SonarTestCase;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -51,13 +50,13 @@ public class AnalyzeProjectJobTest extends SonarTestCase {
 
   public org.junit.rules.ExternalResource test = null;
   private static IProject project;
-  private static ISonarServer server;
+  private static SonarServer server;
   private static ISonarServersManager serversManager;
 
   @BeforeClass
   public static void prepare() throws Exception {
     serversManager = SonarCorePlugin.getServersManager();
-    server = serversManager.create("http://localhost:9000", null, null);
+    server = (SonarServer) serversManager.create("default", "http://localhost:9000", null, null);
     SonarCorePlugin.getServersManager().addServer(server);
 
     project = importEclipseProject("reference");
@@ -77,15 +76,13 @@ public class AnalyzeProjectJobTest extends SonarTestCase {
 
   @Test
   public void shouldConfigureAnalysis() throws Exception {
-    ((ServersManager) serversManager).getServerVersionCache().put("http://localhost:9000", "4.0");
     AnalyzeProjectJob job = job(project);
-    job.setIncremental(true);
     Properties props = new Properties();
     job.configureAnalysis(MONITOR, props, new ArrayList<SonarProperty>());
 
     assertThat(props.get(SonarProperties.SONAR_URL).toString()).isEqualTo("http://localhost:9000");
     assertThat(props.get(SonarProperties.PROJECT_KEY_PROPERTY).toString()).isEqualTo("bar:foo");
-    assertThat(props.get(SonarProperties.ANALYSIS_MODE).toString()).isEqualTo("incremental");
+    assertThat(props.get(SonarProperties.ANALYSIS_MODE).toString()).isEqualTo("preview");
     // SONARIDE-386 check that at least some JARs from the VM are appended
     List<String> libs = Arrays.asList(props.get("sonar.libraries").toString().split(","));
     assertThat(libs).doesNotHaveDuplicates();
@@ -102,21 +99,7 @@ public class AnalyzeProjectJobTest extends SonarTestCase {
   }
 
   @Test
-  public void shouldForceFullPreview() throws Exception {
-    ((ServersManager) serversManager).getServerVersionCache().put("http://localhost:9000", "4.0");
-    AnalyzeProjectJob job = job(project);
-    job.setIncremental(false);
-    Properties props = new Properties();
-    job.configureAnalysis(MONITOR, props, new ArrayList<SonarProperty>());
-
-    assertThat(props.get(SonarProperties.SONAR_URL).toString()).isEqualTo("http://localhost:9000");
-    assertThat(props.get(SonarProperties.PROJECT_KEY_PROPERTY).toString()).isEqualTo("bar:foo");
-    assertThat(props.get(SonarProperties.ANALYSIS_MODE).toString()).isEqualTo("preview");
-  }
-
-  @Test
   public void shouldConfigureAnalysisWithExtraProps() throws Exception {
-    ((ServersManager) serversManager).getServerVersionCache().put("http://localhost:9000", "4.0");
     AnalyzeProjectJob job = job(project);
     Properties props = new Properties();
     job.configureAnalysis(MONITOR, props, Arrays.asList(new SonarProperty("sonar.foo", "value")));
@@ -126,7 +109,6 @@ public class AnalyzeProjectJobTest extends SonarTestCase {
 
   @Test
   public void userConfiguratorShouldOverrideConfiguratorHelperProps() throws Exception {
-    ((ServersManager) serversManager).getServerVersionCache().put("http://localhost:9000", "4.1");
     AnalyzeProjectJob job = job(project);
     Properties props = new Properties();
     job.configureAnalysis(MONITOR, props, Arrays.<SonarProperty>asList());
@@ -178,6 +160,7 @@ public class AnalyzeProjectJobTest extends SonarTestCase {
       this.line = line;
     }
 
+    @Override
     public boolean matches(Object item) {
       IMarker marker = (IMarker) item;
       String actualPath = marker.getResource().getProjectRelativePath().toString();
@@ -185,6 +168,7 @@ public class AnalyzeProjectJobTest extends SonarTestCase {
       return StringUtils.equals(actualPath, path) && (actualLine == line);
     }
 
+    @Override
     public void describeTo(Description description) {
       // TODO Auto-generated method stub
     }

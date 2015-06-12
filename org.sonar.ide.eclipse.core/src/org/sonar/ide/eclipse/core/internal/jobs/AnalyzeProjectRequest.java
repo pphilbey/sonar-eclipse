@@ -19,26 +19,24 @@
  */
 package org.sonar.ide.eclipse.core.internal.jobs;
 
-import org.eclipse.core.resources.IProject;
-import org.sonar.ide.eclipse.core.internal.resources.SonarProperty;
-
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.core.resources.IResource;
+import org.sonar.ide.eclipse.core.internal.resources.SonarProperty;
 
 public class AnalyzeProjectRequest {
 
-  private IProject project;
+  private IResource resource;
   private boolean debugEnabled;
   private List<SonarProperty> extraProps = Collections.emptyList();
-  private String jvmArgs = "";
-  private boolean forceFullPreview;
+  private boolean useHttpWsCache = true;
 
-  public AnalyzeProjectRequest(IProject project) {
-    this.project = project;
+  public AnalyzeProjectRequest(IResource resource) {
+    this.resource = resource;
   }
 
-  public IProject getProject() {
-    return project;
+  public IResource getResource() {
+    return resource;
   }
 
   public boolean isDebugEnabled() {
@@ -59,21 +57,12 @@ public class AnalyzeProjectRequest {
     return this;
   }
 
-  public String getJvmArgs() {
-    return jvmArgs;
+  public boolean useHttpWsCache() {
+    return useHttpWsCache;
   }
 
-  public AnalyzeProjectRequest setJvmArgs(String jvmArgs) {
-    this.jvmArgs = jvmArgs;
-    return this;
-  }
-
-  public boolean isForceFullPreview() {
-    return forceFullPreview;
-  }
-
-  public AnalyzeProjectRequest setForceFullPreview(boolean forceFullPreview) {
-    this.forceFullPreview = forceFullPreview;
+  public AnalyzeProjectRequest useHttpWsCache(boolean useHttpWsCache) {
+    this.useHttpWsCache = useHttpWsCache;
     return this;
   }
 
